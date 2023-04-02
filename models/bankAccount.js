@@ -4,49 +4,45 @@ const validator = require('validator');
 const ownerSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, 'Please provide a name.'],
     trim: true
   },
   email: {
     type: String,
-    required: true,
+    required: [true, 'Please provide an email address.'],
+    unique: true,
     trim: true,
     lowercase: true,
-    unique: true,
     validate: {
-      validator: function(value) {
-        return validator.isEmail(value);
-      },
-      message: '{VALUE} is not a valid email address'
+      validator: (value) => validator.isEmail(value),
+      message: (props) => `${props.value} is not a valid email address.`
     }
   }
 });
 
-const bankAccountSchema = new mongoose.Schema({
+const BankAccount = mongoose.model('BankAccount', new mongoose.Schema({
   accountNumber: {
     type: String,
-    required: true,
-    trim: true,
+    required: [true, 'Please provide an account number.'],
     unique: true,
-    minlength: 8,
-    maxlength: 8
+    minlength: [8, 'The account number should be 8 characters long.'],
+    maxlength: [8, 'The account number should be 8 characters long.'],
+    trim: true
   },
   balance: {
     type: Number,
-    required: true,
-    min: 0
+    required: [true, 'Please provide a balance.'],
+    min: [0, 'The balance cannot be negative.']
   },
   owner: {
     type: ownerSchema,
-    required: true
+    required: [true, 'Please provide an owner.']
   },
   type: {
     type: String,
-    required: true,
+    required: [true, 'Please provide a type.'],
     enum: ['checking', 'savings', 'credit']
   }
-});
+}));
 
-// const BankAccount = mongoose.model('BankAccount', bankAccountSchema);
-module.exports = mongoose.model('BankAccount', bankAccountSchema);
-
+module.exports = BankAccount;

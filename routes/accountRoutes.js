@@ -1,11 +1,12 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const BankAccount = require('../models/bankAccount');
-
 const router = express.Router();
+
+const BankAccount = require('../models/bankAccount');
 
 // define the email validator
 const emailValidator = value => {
+  console.log('emailValidator value:', value);
   if (!value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
     throw new Error('Invalid email address');
   }
